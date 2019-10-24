@@ -1,0 +1,122 @@
+----SELECT TOP 100 * FROM dbo.DimCustomer where CustomerKey = 11000
+
+----select TOP 100 * from dbo.FactInternetSales where CustomerKey = 11000
+----SELECT DATENAME(month, GETDATE())
+
+----SELECT FORMAT(GETDATE(), 'MMMM yyyy')
+
+DECLARE @STARTDATE varchar(20) = '',  @ENDDATE varchar(20) = '', @STARTMM varchar(20) = '',  @ENDMM varchar(20) = '', @STARTYY varchar(20) = '',  @ENDYY varchar(20) = ''
+
+--SET @STARTDATE = '2011-02-05 00:00:00.000'
+--SET @ENDDATE = '2012-02-05 00:00:00.000'
+
+--select DATEADD(month, -3, GETDATE()) 
+
+IF(ISNULL(@STARTDATE, '') = '' or ISNULL(@ENDDATE,'') = '')
+	BEGIN
+		SET @STARTDATE = DATEADD(month, -3, '2011-06-28') 
+		SET @ENDDATE =  DATEADD(month, 19, '2011-02-05') 
+		print @STARTDATE
+		print @ENDDATE
+		--SET @STARTMM =  FORMAT(CAST(@STARTDATE AS datetime), 'MMMM')
+		--SET @ENDMM = FORMAT(CAST(@ENDDATE AS datetime), 'MMMM')
+		--SET @STARTYY =  FORMAT(CAST(@STARTDATE AS datetime), 'yyyy')
+		--SET @ENDYY = FORMAT(CAST(@ENDDATE AS datetime), 'yyyy')
+		SET @STARTDATE = CONVERT(VARCHAR(11),cast(@STARTDATE as DATETIME)-DAY(cast(@STARTDATE as DATETIME))+1 , 121)
+		SET @ENDDATE = EOMONTH(@ENDDATE)
+		print @STARTDATE
+		print @ENDDATE
+	END
+ELSE
+	BEGIN
+		SELECT ''
+	END
+
+-- DESC TABLE DBO.FACTINTERNETSALES
+SELECT * INTO #TEMP FROM
+	(
+	SELECT 
+	COALESCE(DC.FIRSTNAME +' ' + DC.MIDDLENAME + ' ' + DC.LASTNAME, CAST(DC.CUSTOMERKEY AS VARCHAR)) AS 'PROJECTS',
+	FIS.DUEDATE [DUE_DATE],
+	CAST(FORMAT(FIS.DUEDATE,'MMMM') AS varchar) AS 'MONTHS',
+	CAST(FORMAT(FIS.DUEDATE,'yyyy') AS varchar) AS 'YEARS',
+	CONVERT(VARCHAR(11),cast(FIS.DUEDATE as DATETIME)-DAY(cast(FIS.DUEDATE as DATETIME))+1 , 121) AS 'START_DATE_MONTH',
+	FIS.* 
+	FROM DBO.DIMCUSTOMER DC
+	INNER JOIN DBO.FACTINTERNETSALES FIS 
+	ON DC.CUSTOMERKEY = FIS.CUSTOMERKey
+	WHERE CONVERT(VARCHAR(11),FIS.DUEDATE,121) >= @STARTDATE 
+	AND CONVERT(VARCHAR(11),FIS.DUEDATE, 121) <= @ENDDATE 
+)A 
+
+
+SELECT * INTO #TEMP3 FROM 
+(
+SELECT 
+PROJECTS,MONTHS +','+ YEARS [MONTHS],
+SUM(TotalProductCost) [AMOUNT_DUE],
+START_DATE_MONTH
+FROM #TEMP 
+WHERE DUE_DATE > @STARTDATE 
+and DUE_DATE < @ENDDATE
+GROUP BY PROJECTS, MONTHS, YEARS, START_DATE_MONTH
+) D
+
+SELECT * FROM #TEMP3
+--DECLARE @TABLEMONTH TABLE ( MON VARCHAR(100))
+SELECT * INTO #TEMP1 FROM (
+SELECT DISTINCT MONTHS +','+ YEARS [Monthly], START_DATE_MONTH   FROM #TEMP ) B
+
+DECLARE @cols AS NVARCHAR(MAX),
+    @query  AS NVARCHAR(MAX)
+
+select @cols = STUFF((SELECT ',' + QUOTENAME(Monthly) 
+                    from #TEMP1
+                    order by START_DATE_MONTH
+            FOR XML PATH(''), TYPE
+            ).value('.', 'NVARCHAR(MAX)') 
+        ,1,1,'')
+
+select @cols
+
+--select * from #TEMP1 order by START_DATE_MONTH
+
+
+
+--SELECT * INTO #TEMP3 FROM
+--(
+--	SELECT 
+--	PROJECTS,MONTHS +', '+ YEARS [MONTHS],
+--	TotalProductCost [AMOUNT_DUE],
+--	START_DATE_MONTH
+--	FROM #TEMP
+--)  SourceTable
+--PIVOT
+--(
+--	SUM(TotalProductCost)
+--	FOR MONTHS IN( SELECT '''+Monthly+''' from #TEMP1)
+--) AS PivotTable
+
+
+set @query = 'SELECT PROJECTS,' + @cols + ' from 
+             (
+                select PROJECTS, MONTHS, Amount_Due
+                from #TEMP3
+				
+            ) x
+            pivot 
+            (
+                SUM(Amount_Due)
+                for MONTHS in (' + @cols + ')
+            ) p '
+
+EXECUTE(@query);
+
+
+
+
+DROP TABLE #TEMP, #TEMP1, #TEMP3
+
+
+
+

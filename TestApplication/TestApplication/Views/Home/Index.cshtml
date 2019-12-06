@@ -1,0 +1,132 @@
+﻿@model TestApplication.Models.ArrayModels
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<script type="text/javascript">
+    function GetArraySize() {
+        if ($("#txtSize").val() == "" || $("#txtSize").val() == "undefined"  ) {
+            alert("Please enter size.")
+        }
+        else {
+            var val = $("#txtSize").val();
+            $('#arraysize').text(val);
+
+            //$('#divsize *').attr("disabled", "disabled").off('click');
+            $("#txtSize").prop('disabled', true);
+            $("#submitSize").prop('disabled', true);
+
+            $.ajax({
+                url: '/Home/GetArraySize',
+                data: {size: val },
+                success: function (data) {
+                    //alert("Success: " + data);
+                    var str = "";
+                    $('#GetArrayValues').append('<label >Array Values: </label>');
+                    for (var i = 0; i < data; i++) {
+                        str += '<input type="text" value="" name="gender" id="element_' + (i + 1) + '" placeholder = " 0" style = "width:40px" >'
+                    }
+                    //$('#GetArrayValues').append('<input type="text" name="gender" id="element"  placeholder = " 0" style = "width:40px" >');
+                    $('#GetArrayValues').append(str);
+                    $('#GetArrayValues').append('&nbsp<input type="submit" value="Enter" id="submitElements" class="btn btn-default" onclick="GetArrayElements()" />');
+            }
+            });
+        }
+
+        
+    }
+
+    function Enabledivsize() {
+        $("#txtSize").prop('disabled', false);
+        $("#submitSize").prop('disabled', false);
+    }
+
+    function GetArrayElements() {
+        var val = $("#txtSize").val();
+        var a = [];
+        for (var i = 0; i < val; i++) {
+            var elementid = '#element_' + (i + 1);
+            a.push($(elementid).val());
+        }
+
+        ar = JSON.stringify(a);
+
+        //$.ajax({
+        //    type: 'GET',
+        //    url: 'Home/SortArray',
+        //    data: JSON.stringify(a),
+        //    contentType: 'application/json; charset=utf-8',
+        //    datatype: 'json',
+        //    success: function (result) {
+        //        //alert('Array Sorted!!!');
+        //        console.log(result)
+        //        //$('#GetArrayValues').append('<label> Sorted Array: </label>');
+        //        //var str = "";
+        //        //str += "<label> ";
+        //        //$.each(result, function (key, value) {
+        //        //    str += value;
+        //        //    str += " ";
+        //        //});
+        //        //str += "</label>";
+                
+        //    },
+        //    error: function (result) {
+        //        alert('Fail ');
+        //    }
+        //});
+
+        $.ajax({
+            type: 'POST',
+            url: '/Home/SortArray',
+            data: JSON.stringify(a),
+            contentType: 'application/json; charset=utf-8',
+            datatype: 'json',
+            success: function (result) {
+                //alert('Success ');
+                $('#GetArrayValues').append('<br/><label> Sorted Array: </label>');
+                var str = "";
+                str += "<label> ";
+                $.each(result, function (key, value) {
+                    str += value;
+                    str += " ";
+                });
+                str += "</label>";
+                $('#GetArrayValues').append(str);
+            },
+            error: function (result) {
+                alert('Fail ');
+            }
+        });
+    }
+
+</script>
+
+<div>
+    <div>
+        @Html.Label("Size", "Size/ No of Elements:")
+        @Html.Label(" ", new { id = "arraysize" })
+    </div>
+    <div>
+        @Html.Label("Elements", "Array Element:")
+        @Html.Label(" ", new { id = "arrayelementvalues" })
+    </div>
+    
+    <div id="divsize">
+        @Html.Label("GetSize", "Enter Size:")
+        @Html.TextBoxFor(m => m.size, new { id = "txtSize", @class = "textbox", placeholder = "Enter Size", style = "width:100px" })
+        <input type="submit" value="Enter" id="submitSize" class="btn btn-default" onclick="GetArraySize()" />
+        @*<input type="submit" value="Edit" id="enableSize" class="btn btn-default" onclick="Enabledivsize()" />*@ 
+    </div>    
+    
+
+    <div id="GetArrayValues">
+        @*@Html.Label("", "Array Values:")
+        @for (int i = 0; i < ViewBag.Size; i++)
+        {
+                @Html.TextBox("element"+ (i+1), null, new { @class = "textbox", placeholder = " "+(i+1)+"", style = "width:40px" })
+        }
+        
+        <input type="submit" value="Enter" id="submitElements" class="btn btn-default" onclick="GetArrayElements()" />*@
+    </div>
+</div>    

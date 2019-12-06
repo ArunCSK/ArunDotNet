@@ -17,16 +17,20 @@
             $("#txtSize").prop('disabled', true);
             $("#submitSize").prop('disabled', true);
 
+           
+
             $.ajax({
                 url: '/Home/GetArraySize',
                 data: {size: val },
                 success: function (data) {
                     //alert("Success: " + data);
                     var str = "";
+                    
                     $('#GetArrayValues').append('<label >Array Values: </label>');
                     for (var i = 0; i < data; i++) {
                         str += '<input type="text" value="" name="gender" id="element_' + (i + 1) + '" placeholder = " 0" style = "width:40px" >'
                     }
+                    
                     //$('#GetArrayValues').append('<input type="text" name="gender" id="element"  placeholder = " 0" style = "width:40px" >');
                     $('#GetArrayValues').append(str);
                     $('#GetArrayValues').append('&nbsp<input type="submit" value="Enter" id="submitElements" class="btn btn-default" onclick="GetArrayElements()" />');
@@ -51,6 +55,13 @@
         }
 
         ar = JSON.stringify(a);
+        var values = "";
+        $.each(a, function (key, value) {
+            values += value;
+            values += " ";
+        });
+        $('#arrayelementvalues').empty();
+        $('#arrayelementvalues').append(values);
 
         //$.ajax({
         //    type: 'GET',
@@ -84,7 +95,8 @@
             datatype: 'json',
             success: function (result) {
                 //alert('Success ');
-                $('#GetArrayValues').append('<br/><label> Sorted Array: </label>');
+                $('#divArraySorted').empty();
+                $('#divArraySorted').append('<label> Sorted Array: </label>');
                 var str = "";
                 str += "<label> ";
                 $.each(result, function (key, value) {
@@ -92,7 +104,7 @@
                     str += " ";
                 });
                 str += "</label>";
-                $('#GetArrayValues').append(str);
+                $('#divArraySorted').append(str);
             },
             error: function (result) {
                 alert('Fail ');
@@ -103,14 +115,7 @@
 </script>
 
 <div>
-    <div>
-        @Html.Label("Size", "Size/ No of Elements:")
-        @Html.Label(" ", new { id = "arraysize" })
-    </div>
-    <div>
-        @Html.Label("Elements", "Array Element:")
-        @Html.Label(" ", new { id = "arrayelementvalues" })
-    </div>
+   
     
     <div id="divsize">
         @Html.Label("GetSize", "Enter Size:")
@@ -119,14 +124,27 @@
         @*<input type="submit" value="Edit" id="enableSize" class="btn btn-default" onclick="Enabledivsize()" />*@ 
     </div>    
     
-
     <div id="GetArrayValues">
         @*@Html.Label("", "Array Values:")
-        @for (int i = 0; i < ViewBag.Size; i++)
-        {
-                @Html.TextBox("element"+ (i+1), null, new { @class = "textbox", placeholder = " "+(i+1)+"", style = "width:40px" })
-        }
-        
-        <input type="submit" value="Enter" id="submitElements" class="btn btn-default" onclick="GetArrayElements()" />*@
+            @for (int i = 0; i < ViewBag.Size; i++)
+            {
+                    @Html.TextBox("element"+ (i+1), null, new { @class = "textbox", placeholder = " "+(i+1)+"", style = "width:40px" })
+            }
+            <input type="submit" value="Enter" id="submitElements" class="btn btn-default" onclick="GetArrayElements()" />*@
+    </div>
+
+    <div>
+        @Html.Label("Size", "Size/ No of Elements:")
+        @Html.Label(" ", new { id = "arraysize" })
+    </div>
+    <div>
+        @Html.Label("Elements", "Array Element:")
+        @Html.Label(" ", new { id = "arrayelementvalues" })
+    </div>
+
+   
+
+    <div id="divArraySorted">
+
     </div>
 </div>    

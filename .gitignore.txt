@@ -1,0 +1,2 @@
+\TestApplication\packages
+\TestApplication\TestApplication\bin

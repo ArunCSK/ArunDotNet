@@ -1,7 +1,19 @@
-﻿@{
+﻿@model WebAppCore.Models.Employees
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Home</h1>
+<div class="row">
+    <div class="col-md-6">
+        @Html.Label("Name", "Name:") 
+        @Html.TextBoxFor(m => m.EmployeeName, new { id = "EmpName", @class = "form-control", placeholder = "Employee Name", style = "width:200px" })
+        @Html.Label("PhoneNo", "Phone :") 
+        @Html.TextBoxFor(m => m.PhoneNo, new { id = "PhoneNo", @class = "form-control", placeholder = "Phone Number", style = "width:200px" })
+    </div>
+    <div class="col-md-6">
+        <label for="photo">Photo</label> 
+    </div>
+</div>
+<div class="">
+    
 </div>

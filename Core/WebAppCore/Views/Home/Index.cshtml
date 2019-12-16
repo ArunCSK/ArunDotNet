@@ -3,17 +3,87 @@
     ViewData["Title"] = "Home Page";
 }
 
+<script type="text/javascript">
+    function AddEmployee()
+    {
+       // alert("Clicked");
+    }
+</script>
+
 <div class="row">
     <div class="col-md-6">
-        @Html.Label("Name", "Name:") 
-        @Html.TextBoxFor(m => m.EmployeeName, new { id = "EmpName", @class = "form-control", placeholder = "Employee Name", style = "width:200px" })
-        @Html.Label("PhoneNo", "Phone :") 
-        @Html.TextBoxFor(m => m.PhoneNo, new { id = "PhoneNo", @class = "form-control", placeholder = "Phone Number", style = "width:200px" })
+        <div class="row">
+            <div class="col-md-6" style="text-align: right;">
+                @Html.Label("Name", "Name:") 
+            </div>
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.EmployeeName, new { id = "EmpName", @class = "form-control", placeholder = "Employee Name", style = "width: 100%;" })
+            </div>
+            <div>
+                <small>
+                    @Html.ValidationMessageFor(m => m.EmployeeName,  "", new { @class = "text-danger"})
+                </small>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col-md-6" style="text-align: right;">
+                @Html.Label("PhoneNo", "Phone :") 
+            </div>
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.PhoneNo, new { id = "PhoneNo", @class = "form-control", placeholder = "Phone Number", style = "width: 100%;" })
+            </div>
+            <div>
+                <small>
+                    @Html.ValidationMessageFor(m => m.PhoneNo,  "", new { @class = "text-danger" })
+                </small>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col-md-6" style="text-align: right;">
+                @Html.Label("City", "City :") 
+            </div>
+            <div class="col-md-6">
+                @Html.DropDownListFor(m => m.City, new SelectList(Model.City, "Key", "Value", "ME"),"- Please select your city -", new { @class = "form-control" })
+            </div>
+            <div>
+                <small>
+                    @Html.ValidationMessageFor(m => m.City,  "", new { @class = "text-danger" })
+                </small>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+             <div class="col-md-6" style="text-align: right;">
+                @Html.Label("Gender", "Gender :") 
+            </div>
+            <div class="col-md-6">
+                 Male  
+            @Html.RadioButtonFor(m => m.Sex, "Male")  
+            Female  
+            @Html.RadioButtonFor(m => m.Sex, "Female")  
+            @Html.ValidationMessageFor(m => m.Sex,  "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col-md-6" style="text-align: right;">
+                @Html.Label("Email", "Email :") 
+            </div>
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.Email, new { id = "EmailId", @class = "form-control", placeholder = "Email", style = "width: 100%;" })
+                @Html.ValidationMessageFor(m => m.Email,  "", new { @class = "text-danger" })
+            </div>
+        </div>
+        
+        
     </div>
-    <div class="col-md-6">
-        <label for="photo">Photo</label> 
+    <div class="col-md-6 text-center">
+        <label for="upload"></label> 
     </div>
 </div>
-<div class="">
-    
+<br/>
+<div class="text-center">
+    <input type="submit" value="Add Employee" onclick="AddEmployee();" class="btn btn-primary">
 </div>

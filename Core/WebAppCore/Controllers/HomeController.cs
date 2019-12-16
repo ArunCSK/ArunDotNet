@@ -20,9 +20,25 @@ namespace WebAppCore.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var model = new Employees();
+            model.City = GetCityDropDownValue();
+            return View(model);
         }
 
+        
+
+
+        private Dictionary<string, string> GetCityDropDownValue()
+        {
+            return new Dictionary<string, string>
+            {
+                {"MU", "Mumbai"},
+                {"DL", "Delhi"},
+                {"CH", "Chennai"},
+                {"KL", "Kolkata"}
+                // some lines skipped
+            };
+        }
         public IActionResult Privacy()
         {
             return View();

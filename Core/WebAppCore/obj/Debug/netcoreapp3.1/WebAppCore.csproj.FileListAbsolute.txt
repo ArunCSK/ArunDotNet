@@ -34,3 +34,4 @@ D:\Project\Core\WebAppCore\obj\Debug\netcoreapp3.1\WebAppCore.dll
 D:\Project\Core\WebAppCore\obj\Debug\netcoreapp3.1\WebAppCore.pdb
 D:\Project\Core\WebAppCore\obj\Debug\netcoreapp3.1\WebAppCore.csproj.CopyComplete
 D:\Project\Core\WebAppCore\bin\Debug\netcoreapp3.1\launch.json
+d:\Project\Core\WebAppCore\bin\Debug\netcoreapp3.1\Web.config

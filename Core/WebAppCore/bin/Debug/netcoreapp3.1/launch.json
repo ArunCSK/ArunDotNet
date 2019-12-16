@@ -4,6 +4,6 @@
     "runtimeExecutable": "./path/to/chrome.exe",
     "request": "launch",
     "url": "http://localhost:5000",
-    "webRoot": "${workspaceRoot}/WebAppCore",          // maybe you need to adjust this entry to "C:\Users\viru babu\Documents\MVCcoreLinkdin"
+    "webRoot": "${workspaceRoot}/",          // maybe you need to adjust this entry to "C:\Users\viru babu\Documents\MVCcoreLinkdin"
     "preLaunchTask": "shell: dotnet run"           // add prelaunch task  start (defined in tasks.json)
 }
